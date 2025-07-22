@@ -1,0 +1,142 @@
+[
+  {
+    "timestamp": "2025-07-04T07:22:50.561387",
+    "user_id": 7151906245,
+    "command": "/market"
+  },
+  {
+    "timestamp": "2025-07-04T07:22:58.310558",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-04T07:28:31.077600",
+    "user_id": 7151906245,
+    "command": "/start"
+  },
+  {
+    "timestamp": "2025-07-04T07:28:38.218936",
+    "user_id": 7151906245,
+    "command": "/help"
+  },
+  {
+    "timestamp": "2025-07-04T08:08:03.022880",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-04T08:11:02.012699",
+    "user_id": 923790989,
+    "command": "/market"
+  },
+  {
+    "timestamp": "2025-07-04T08:15:28.334016",
+    "user_id": 923790989,
+    "command": "/market"
+  },
+  {
+    "timestamp": "2025-07-04T08:28:54.144808",
+    "user_id": 923790989,
+    "command": "/market"
+  },
+  {
+    "timestamp": "2025-07-04T08:29:10.983400",
+    "user_id": 923790989,
+    "command": "/summary"
+  },
+  {
+    "timestamp": "2025-07-04T08:37:22.988147",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-04T08:37:42.089415",
+    "user_id": 923790989,
+    "command": "/summary"
+  },
+  {
+    "timestamp": "2025-07-04T08:49:56.061889",
+    "user_id": 923790989,
+    "command": "/summary"
+  },
+  {
+    "timestamp": "2025-07-04T08:53:58.721676",
+    "user_id": 923790989,
+    "command": "/define"
+  },
+  {
+    "timestamp": "2025-07-04T09:00:31.965329",
+    "user_id": 923790989,
+    "command": "/myalert"
+  },
+  {
+    "timestamp": "2025-07-04T09:00:39.337264",
+    "user_id": 923790989,
+    "command": "/setalert"
+  },
+  {
+    "timestamp": "2025-07-04T09:00:49.864264",
+    "user_id": 923790989,
+    "command": "/setalert"
+  },
+  {
+    "timestamp": "2025-07-04T09:15:07.327414",
+    "user_id": 923790989,
+    "command": "/define"
+  },
+  {
+    "timestamp": "2025-07-04T09:20:42.790624",
+    "user_id": 1368774823,
+    "command": "/setalert"
+  },
+  {
+    "timestamp": "2025-07-04T09:27:34.711554",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-04T09:38:54.128809",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-04T09:39:14.677937",
+    "user_id": 923790989,
+    "command": "/removealert"
+  },
+  {
+    "timestamp": "2025-07-04T10:03:03.167118",
+    "user_id": 923790989,
+    "command": "/dailyon"
+  },
+  {
+    "timestamp": "2025-07-04T16:09:55.906893",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-22T15:57:19.701166",
+    "user_id": 1347245823,
+    "command": "/setalert"
+  },
+  {
+    "timestamp": "2025-07-22T15:57:32.768537",
+    "user_id": 1347245823,
+    "command": "/myalert"
+  },
+  {
+    "timestamp": "2025-07-22T15:57:38.341308",
+    "user_id": 1347245823,
+    "command": "/removealert"
+  },
+  {
+    "timestamp": "2025-07-22T15:57:43.536768",
+    "user_id": 1347245823,
+    "command": "/dailyon"
+  },
+  {
+    "timestamp": "2025-07-22T15:57:52.149731",
+    "user_id": 1347245823,
+    "command": "/dailyoff"
+  }
+]

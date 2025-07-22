@@ -1,0 +1,15 @@
+{
+  "welcome": "👋 Welcome to DeFi Vault Assistant!",
+  "help": "Here’s what I can do for you:",
+  "top_vaults": "📊 Top Yield Farming Vaults",
+  "market_summary": "📈 DeFi Market Summary",
+  "set_alert": "📢 Alert threshold updated.",
+  "error": "❌ Something went wrong. Please try again later.",
+  "glossary_apy": "Annual Percentage Yield is the compounding interest you earn in a year.",
+  "glossary_vault": "A vault is a smart contract that automates strategies to earn passive yield.",
+  "glossary_impermanent loss": "A temporary loss of funds caused by volatility in liquidity pools.",
+  "glossary_staking": "Locking tokens to earn rewards and support a blockchain.",
+  "glossary_lp token": "Represents your share in a liquidity pool.",
+  "glossary_tvl": "Total Value Locked — how much capital is deposited in a protocol.",
+  "glossary_slippage": "The difference between expected and executed trade prices."
+} 

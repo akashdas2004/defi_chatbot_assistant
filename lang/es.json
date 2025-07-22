@@ -1,0 +1,15 @@
+{
+  "welcome": "👋 ¡Bienvenido a DeFi Vault Assistant!",
+  "help": "Esto es lo que puedo hacer por ti:",
+  "top_vaults": "📊 Mejores bóvedas de yield farming",
+  "market_summary": "📈 Resumen del mercado DeFi",
+  "set_alert": "📢 Umbral de alerta actualizado.",
+  "error": "❌ Algo salió mal. Por favor, inténtalo de nuevo más tarde.",
+  "glossary_apy": "El rendimiento porcentual anual es el interés compuesto que ganas en un año.",
+  "glossary_vault": "Una bóveda es un contrato inteligente que automatiza estrategias para obtener rendimiento pasivo.",
+  "glossary_impermanent loss": "Una pérdida temporal de fondos causada por la volatilidad en los pools de liquidez.",
+  "glossary_staking": "Bloquear tokens para ganar recompensas y apoyar una blockchain.",
+  "glossary_lp token": "Representa tu participación en un pool de liquidez.",
+  "glossary_tvl": "Valor total bloqueado: cuánto capital está depositado en un protocolo.",
+  "glossary_slippage": "La diferencia entre el precio esperado y el ejecutado en una operación."
+} 
