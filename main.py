@@ -1,13 +1,17 @@
 import os
+import asyncio
+import threading
+from flask import Flask
 from dotenv import load_dotenv
 from telegram.ext import ApplicationBuilder
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from alerts.alert_manager import check_alerts
 from bot_core.telegram_adapter import register_handlers
-from flask import Flask
-import threading
 
-# Start small Flask server to bind a port (so Render doesn't shut you down)
+load_dotenv()
+TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+
+# Start Flask server to keep Render port alive
 app_http = Flask(__name__)
 
 @app_http.route("/")
@@ -17,27 +21,32 @@ def home():
 def run_http_server():
     app_http.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
+# Launch Flask in background
 threading.Thread(target=run_http_server, daemon=True).start()
 
-# Load env vars
-load_dotenv()
-TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-
-# 🧠 Define the scheduler but don’t start it yet
-scheduler = AsyncIOScheduler()
-scheduler.add_job(check_alerts, trigger="interval", minutes=5)
-
-# ✅ Async entry point
+# 🚀 Async startup
 async def main():
     print("🤖 Bot running...")
 
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     register_handlers(app)
 
-    scheduler.start()  # 🔄 Now the event loop is running
+    # Start async scheduler only after event loop is alive
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(check_alerts, trigger="interval", minutes=5)
+    scheduler.start()
+
     await app.run_polling()
 
-# 🚀 Launch
+# 🧠 Fix: Don't use asyncio.run() if event loop is running (Render may run one)
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # For environments where event loop is already running (Jupyter, Flask, etc.)
+            loop.create_task(main())
+        else:
+            loop.run_until_complete(main())
+    except RuntimeError:
+        # In case no event loop is present
+        asyncio.run(main())
