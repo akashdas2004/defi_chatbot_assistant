@@ -1,5 +1,6 @@
 import os
 import threading
+import asyncio
 from flask import Flask
 from telegram.ext import ApplicationBuilder
 from bot_core.telegram_adapter import register_handlers
@@ -16,9 +17,17 @@ TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
 register_handlers(app)
 
-# Start alert checker
+# ✅ Async-safe wrapper to run check_alerts
+def run_check_alerts():
+    try:
+        loop = asyncio.get_event_loop()
+        loop.create_task(check_alerts())  # schedule coroutine
+    except RuntimeError:
+        asyncio.run(check_alerts())  # fallback if no running loop
+
+# Start alert checker scheduler
 scheduler = BackgroundScheduler()
-scheduler.add_job(check_alerts, trigger="interval", minutes=5)
+scheduler.add_job(run_check_alerts, trigger="interval", minutes=5)
 scheduler.start()
 
 # ✅ Dummy Flask server to keep Render Web Service alive
