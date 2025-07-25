@@ -1,44 +1,56 @@
-import requests
+from data_integration.coinmarketcap_client import get_market_data
 
-COINGECKO_API_BASE = "https://api.coingecko.com/api/v3"
+# Default list of tokens
+DEFAULT_TOP_TOKENS = ["BTC", "ETH", "SOL", "BNB", "ADA"]
+DEFAULT_CURRENCY = "USD"
 
-def get_top_defi_tokens(limit=5):
-    url = f"{COINGECKO_API_BASE}/coins/markets"
-    params = {
-        "vs_currency": "usd",
-        "category": "decentralized-finance-defi",
-        "order": "market_cap_desc",
-        "per_page": limit,
-        "page": 1
-    }
+def get_top_tokens_cmc(symbols=DEFAULT_TOP_TOKENS, currency=DEFAULT_CURRENCY):
+    """
+    Fetches market data for given symbols from CoinMarketCap.
+    """
+    data = get_market_data(",".join(symbols), currency=currency)
+    if not data or "data" not in data:
+        return None
 
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        print(f"[ERROR] CoinGecko API failed: {e}")
-        return []
+    tokens = []
+    for symbol in symbols:
+        token = data["data"].get(symbol)
+        if token:
+            try:
+                quote = token["quote"][currency]
+                tokens.append({
+                    "name": token["name"],
+                    "symbol": symbol.upper(),
+                    "price": quote["price"],
+                    "change": quote["percent_change_24h"],
+                    "market_cap": quote["market_cap"]
+                })
+            except KeyError:
+                continue
+    return tokens
 
-def format_market_data(limit=5):
-    tokens = get_top_defi_tokens(limit=limit)
 
+def format_market_data(symbols=DEFAULT_TOP_TOKENS, limit=5, currency=DEFAULT_CURRENCY):
+    """
+    Formats the top token data for display.
+    """
+    tokens = get_top_tokens_cmc(symbols[:limit], currency=currency)
     if not tokens:
         return "⚠️ Could not fetch market data at the moment."
 
-    result = "📈 Top DeFi Tokens by Market Cap:\n\n"
-    for token in tokens:
-        name = token.get("name")
-        symbol = token.get("symbol").upper()
-        price = token.get("current_price", 0)
-        change = token.get("price_change_percentage_24h", 0)
-        mcap = token.get("market_cap", 0)
+    currency_sign = "$" if currency.upper() == "USD" else f"{currency.upper()} "
+    result = f"📈 Top Tokens by Market Cap ({currency.upper()}):\n\n"
 
+    for token in tokens:
+        name = token["name"]
+        symbol = token["symbol"]
+        price = token["price"]
+        change = token["change"]
+        mcap = token["market_cap"]
         emoji = "📈" if change > 0 else "📉"
         result += (
             f"• {name} ({symbol})\n"
-            f"  Price: ${price:.2f} ({emoji} {change:.2f}%)\n"
-            f"  Market Cap: ${mcap:,.0f}\n\n"
+            f"  Price: {currency_sign}{price:,.2f} ({emoji} {change:.2f}%)\n"
+            f"  Market Cap: {currency_sign}{mcap:,.0f}\n\n"
         )
-
-    return result 
+    return result

@@ -1,10 +1,7 @@
 from telegram import Bot
-import yaml
+import os
 
-with open("config/settings.yaml") as f:
-    config = yaml.safe_load(f)
-
-bot = Bot(token=config["TELEGRAM_BOT_TOKEN"])
+bot = Bot(token=os.environ["TELEGRAM_BOT_TOKEN"])
 
 def send_alert(user_id, message):
     bot.send_message(chat_id=user_id, text=message)

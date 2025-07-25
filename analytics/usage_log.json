@@ -138,5 +138,20 @@
     "timestamp": "2025-07-22T15:57:52.149731",
     "user_id": 1347245823,
     "command": "/dailyoff"
+  },
+  {
+    "timestamp": "2025-07-22T18:23:06.153051",
+    "user_id": 923790989,
+    "command": "/removealert"
+  },
+  {
+    "timestamp": "2025-07-22T18:23:50.578676",
+    "user_id": 923790989,
+    "command": "/logsummary"
+  },
+  {
+    "timestamp": "2025-07-25T04:07:17.964944",
+    "user_id": 923790989,
+    "command": "/logsummary"
   }
 ]

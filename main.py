@@ -3,6 +3,8 @@ from telegram.ext import ApplicationBuilder
 from bot_core.telegram_adapter import register_handlers
 from apscheduler.schedulers.background import BackgroundScheduler
 from alerts.alert_manager import check_alerts
+from dotenv import load_dotenv
+load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 

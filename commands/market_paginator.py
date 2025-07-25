@@ -1,6 +1,6 @@
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update, Message
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update
 from telegram.ext import ContextTypes
-from data_integration.coingecko_client import get_top_tokens_by_marketcap
+from data_integration.coinmarketcap_client import get_top_tokens_by_marketcap  # ← updated
 
 TOKENS_PER_PAGE = 5
 
@@ -9,7 +9,7 @@ def get_page_data(tokens, page):
     end = start + TOKENS_PER_PAGE
     total_pages = (len(tokens) + TOKENS_PER_PAGE - 1) // TOKENS_PER_PAGE
 
-    formatted = f"📈 *Top DeFi Tokens (Page {page}/{total_pages}):*\n\n"
+    formatted = f"📈 *Top Tokens by Market Cap (Page {page}/{total_pages}):*\n\n"
     for token in tokens[start:end]:
         price = token.get("price", 0)
         change = token.get("change_24h", 0)
@@ -35,10 +35,10 @@ def build_keyboard(page, max_pages):
     return InlineKeyboardMarkup([buttons]) if buttons else None
 
 async def handle_market(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tokens = get_top_tokens_by_marketcap()
-    context.user_data["market_tokens"] = tokens  # cache for paging
+    tokens = get_top_tokens_by_marketcap(limit=50)  # ← CoinMarketCap returns top tokens
+    context.user_data["market_tokens"] = tokens  # cache for pagination
     text = get_page_data(tokens, 1)
-    reply_markup = build_keyboard(1, (len(tokens) + 4) // 5)
+    reply_markup = build_keyboard(1, (len(tokens) + TOKENS_PER_PAGE - 1) // TOKENS_PER_PAGE)
 
     await update.message.reply_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
@@ -50,10 +50,10 @@ async def handle_market_pagination(update: Update, context: ContextTypes.DEFAULT
     tokens = context.user_data.get("market_tokens")
 
     if not tokens:
-        tokens = get_top_tokens_by_marketcap()
+        tokens = get_top_tokens_by_marketcap(limit=50)
         context.user_data["market_tokens"] = tokens
 
     text = get_page_data(tokens, page)
-    markup = build_keyboard(page, (len(tokens) + 4) // 5)
+    markup = build_keyboard(page, (len(tokens) + TOKENS_PER_PAGE - 1) // TOKENS_PER_PAGE)
 
-    await query.edit_message_text(text=text, parse_mode="Markdown", reply_markup=markup) 
+    await query.edit_message_text(text=text, parse_mode="Markdown", reply_markup=markup)
