@@ -4,11 +4,10 @@ A powerful Telegram bot that brings DeFi market data, alerts, education, and mor
 
 ## Features
 
-- **Real-Time Market Data:** Fetches top DeFi tokens with price, 24h change, and market cap. Automatically falls back to a backup API if the primary is unavailable.
+- **Real-Time Market Data:** Fetches top DeFi tokens with price, 24h change, and market cap using CoinMarketCap API.
 - **Custom Alerts:** Set price alerts for your favorite tokens and get notified instantly.
 - **Daily Digest:** Receive a daily summary of the DeFi market.
 - **Definitions & Explanations:** Get clear explanations of DeFi terms and concepts.
-- **Multilingual Support:** Supports multiple languages for a global audience.
 - **User-Friendly Commands:** Simple commands and inline buttons for easy interaction.
 
 ---
@@ -18,6 +17,7 @@ A powerful Telegram bot that brings DeFi market data, alerts, education, and mor
 ### Prerequisites
 - Python 3.10+
 - Telegram Bot Token ([Get from BotFather](https://core.telegram.org/bots#botfather))
+- CoinMarketCap API Key ([Get from CoinMarketCap](https://pro.coinmarketcap.com/account/))
 
 ### Installation
 1. **Clone the repository:**
@@ -38,7 +38,8 @@ A powerful Telegram bot that brings DeFi market data, alerts, education, and mor
 Create a `.env` file in the project root:
 ```
 TELEGRAM_BOT_TOKEN=your-telegram-bot-token-here
-SELF_AWAKE_URL=https://your-app-url.onrender.com/  # Optional, for self-awake script
+COINMARKETCAP_API_KEY=your-coinmarketcap-api-key-here
+SELF_AWAKE_URL=http://localhost:8000/  # Optional, for self-awake script
 ```
 
 ### 2. Run the Bot
@@ -59,6 +60,7 @@ python main.py & python self_awake.py
 2. **Create a new Web Service** on [Render](https://render.com/), connect your repo.
 3. **Set environment variables** in the Render dashboard:
    - `TELEGRAM_BOT_TOKEN`
+   - `COINMARKETCAP_API_KEY`
    - `SELF_AWAKE_URL` (set to your Render web service URL)
 4. **Set the Start Command:**
    ```bash
@@ -68,15 +70,22 @@ python main.py & python self_awake.py
 
 ---
 
+
 ## Usage
 
 - `/start` — Show welcome message and main menu
-- `/top` — Show top DeFi tokens
+- `/market` — Show top DeFi tokens (CoinMarketCap)
 - `/alert` — Set a price alert
 - `/digest` — Opt in to daily digest
 - `/define <term>` — Get a definition of a DeFi term
 - `/explain <concept>` — Get an explanation of a DeFi concept
-- `/language` — Change bot language
+---
+
+## Troubleshooting
+- **ModuleNotFoundError:** If you see errors about missing modules (e.g., `dotenv`, `google`), make sure all dependencies are listed in `requirements.txt` and installed.
+- **KeyError for Environment Variables:** Ensure all required environment variables are set in your `.env` file (locally) or in the Render dashboard (production).
+- **Coroutine Not Awaited Warning:** The alert scheduler is async-safe; if you modify alert logic, ensure async compatibility is maintained.
+- **Service Sleeping on Render:** The Flask keepalive server and/or self-awake script help prevent your service from sleeping.
 
 ---
 
