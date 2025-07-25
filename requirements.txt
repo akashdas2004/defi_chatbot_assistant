@@ -8,3 +8,4 @@ google-auth
 google-auth-httplib2
 googleapis-common-protos
 dotenv
+python-telegram-bot[webhooks]==20.7
