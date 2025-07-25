@@ -1,5 +1,9 @@
 # DeFi Vault Assistant Bot
 
+Discover top DeFi vaults, set alerts, and learn yield farming—all from Telegram.
+
+**[🚀 Live Demo on Telegram](https://t.me/defi_vault_assistant_bot)**
+
 A powerful Telegram bot that brings DeFi market data, alerts, education, and more directly to your Telegram chat.
 
 ## Features
