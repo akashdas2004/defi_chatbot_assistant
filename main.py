@@ -11,7 +11,7 @@ from bot_core.telegram_adapter import register_handlers
 load_dotenv()
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 
-# Start Flask server to keep Render port alive
+# 👇 Run a minimal Flask server to bind a port (keeps Render happy)
 app_http = Flask(__name__)
 
 @app_http.route("/")
@@ -21,32 +21,30 @@ def home():
 def run_http_server():
     app_http.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
-# Launch Flask in background
 threading.Thread(target=run_http_server, daemon=True).start()
 
-# 🚀 Async startup
-async def main():
+# ✅ Main async function for bot and scheduler
+async def run_bot():
     print("🤖 Bot running...")
 
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     register_handlers(app)
 
-    # Start async scheduler only after event loop is alive
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_alerts, trigger="interval", minutes=5)
     scheduler.start()
 
-    await app.run_polling()
+    # ✅ Don't create new event loop — just await
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
+    await app.updater.idle()
 
-# 🧠 Fix: Don't use asyncio.run() if event loop is running (Render may run one)
+# ✅ Launch the bot without crashing the event loop
 if __name__ == "__main__":
     try:
         loop = asyncio.get_event_loop()
-        if loop.is_running():
-            # For environments where event loop is already running (Jupyter, Flask, etc.)
-            loop.create_task(main())
-        else:
-            loop.run_until_complete(main())
-    except RuntimeError:
-        # In case no event loop is present
-        asyncio.run(main())
+        loop.create_task(run_bot())
+        loop.run_forever()
+    except KeyboardInterrupt:
+        print("Bot stopped.")
