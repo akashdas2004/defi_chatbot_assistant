@@ -1,14 +1,13 @@
 import os
 from dotenv import load_dotenv
 from telegram.ext import ApplicationBuilder
-from bot_core.telegram_adapter import register_handlers
-from apscheduler.schedulers.asyncio import AsyncIOScheduler  # ✅ Async scheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from alerts.alert_manager import check_alerts
-
-# Optional: Self-ping HTTP server to keep Render port open
+from bot_core.telegram_adapter import register_handlers
 from flask import Flask
 import threading
 
+# Start small Flask server to bind a port (so Render doesn't shut you down)
 app_http = Flask(__name__)
 
 @app_http.route("/")
@@ -20,19 +19,25 @@ def run_http_server():
 
 threading.Thread(target=run_http_server, daemon=True).start()
 
-# Load environment variables
+# Load env vars
 load_dotenv()
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 
-# Build Telegram bot app
-app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
-register_handlers(app)
-
-# ✅ Use AsyncIOScheduler to support async check_alerts
+# 🧠 Define the scheduler but don’t start it yet
 scheduler = AsyncIOScheduler()
 scheduler.add_job(check_alerts, trigger="interval", minutes=5)
-scheduler.start()
 
-if __name__ == "__main__":
+# ✅ Async entry point
+async def main():
     print("🤖 Bot running...")
-    app.run_polling()
+
+    app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
+    register_handlers(app)
+
+    scheduler.start()  # 🔄 Now the event loop is running
+    await app.run_polling()
+
+# 🚀 Launch
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
