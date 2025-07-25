@@ -1,6 +1,8 @@
 import os
 import asyncio
+import time
 import threading
+import requests
 from flask import Flask
 from dotenv import load_dotenv
 from telegram.ext import ApplicationBuilder
@@ -10,41 +12,46 @@ from bot_core.telegram_adapter import register_handlers
 
 load_dotenv()
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+SELF_URL = os.environ.get(" SELF_AWAKE_URL")  # Set this on Render
 
-# 👇 Run a minimal Flask server to bind a port (keeps Render happy)
-app_http = Flask(__name__)
+# 👇 Flask server to keep Render alive
+flask_app = Flask(__name__)
 
-@app_http.route("/")
+@flask_app.route("/")
 def home():
     return "🤖 Bot is alive"
 
 def run_http_server():
-    app_http.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
+# 🆕 Self-wake function that pings the server every 5 mins
+def self_wake():
+    while True:
+        try:
+            print(f"[Self-Wake] Pinging {SELF_URL}")
+            requests.get(SELF_URL)
+        except Exception as e:
+            print(f"[Self-Wake] Failed to ping: {e}")
+        time.sleep(300)  # 5 minutes
+
+# 🧵 Start background threads
 threading.Thread(target=run_http_server, daemon=True).start()
+threading.Thread(target=self_wake, daemon=True).start()
 
-# ✅ Main async function for bot and scheduler
-async def run_bot():
+# ✅ Main bot setup
+async def main():
     print("🤖 Bot running...")
 
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     register_handlers(app)
 
+    # Scheduler for periodic async jobs
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_alerts, trigger="interval", minutes=5)
     scheduler.start()
 
-    # ✅ Don't create new event loop — just await
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.idle()
+    await app.run_polling()
 
-# ✅ Launch the bot without crashing the event loop
+# 🔁 Entry point
 if __name__ == "__main__":
-    try:
-        loop = asyncio.get_event_loop()
-        loop.create_task(run_bot())
-        loop.run_forever()
-    except KeyboardInterrupt:
-        print("Bot stopped.")
+    asyncio.run(main())
