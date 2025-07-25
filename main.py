@@ -17,4 +17,13 @@ scheduler.start()
 
 if __name__ == "__main__":
     print("🤖 Bot running...")
-    app.run_polling() 
+    if "RENDER" in os.environ or "RENDER_EXTERNAL_HOSTNAME" in os.environ:
+        # Use webhook mode on Render
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=int(os.environ.get("PORT", 10000)),
+            url_path=TELEGRAM_BOT_TOKEN,
+            webhook_url=f"https://defi-chatbot-assistant.onrender.com/{TELEGRAM_BOT_TOKEN}"
+        )
+    else:
+        app.run_polling() 

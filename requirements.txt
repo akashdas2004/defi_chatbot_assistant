@@ -2,3 +2,7 @@ python-telegram-bot==20.0
 requests
 PyYAML
 APScheduler 
+google-api-python-client
+google-auth
+google-auth-httplib2
+googleapis-common-protos
